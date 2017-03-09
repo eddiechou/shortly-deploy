@@ -1,25 +1,52 @@
 var db = require('../config');
 var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
+var mongoose = require('mongoose');
 
-var User = db.Model.extend({
-  tableName: 'users',
-  hasTimestamps: true,
-  initialize: function() {
-    this.on('creating', this.hashPassword);
-  },
-  comparePassword: function(attemptedPassword, callback) {
-    bcrypt.compare(attemptedPassword, this.get('password'), function(err, isMatch) {
-      callback(isMatch);
-    });
-  },
-  hashPassword: function() {
-    var cipher = Promise.promisify(bcrypt.hash);
-    return cipher(this.get('password'), null, null).bind(this)
-      .then(function(hash) {
-        this.set('password', hash);
-      });
-  }
+var userSchema = mongoose.Schema({
+  username: String,
+  password: String,
+  timestamps: { type: Date, default: Date.now }
 });
 
-module.exports = User;
+var User = mongoose.model('User', userSchema);
+userSchema.methods.insert = function (username, password) {
+  // hash password
+  var cipher = Promise.promisify(bcrypt.hash);
+  var hashedPassword = bcrypt.hashSync(password);
+  var newUser = new User({ username: username, password: hashedPassword });
+  console.log(newUser);
+  newUser.save();
+  // return cipher(this.get('password'), null, null).bind(this)
+  //   .then(function(hash) {
+  //   });
+};
+
+
+
+
+
+
+
+
+// var User = mongoose.model('User', userSchema);
+//   tableName: 'users',
+//   hasTimestamps: true,
+//   initialize: function() {
+//     this.on('creating', this.hashPassword);
+//   },
+//   comparePassword: function(attemptedPassword, callback) {
+//     bcrypt.compare(attemptedPassword, this.get('password'), function(err, isMatch) {
+//       callback(isMatch);
+//     });
+//   },
+//   hashPassword: function() {
+//     var cipher = Promise.promisify(bcrypt.hash);
+//     return cipher(this.get('password'), null, null).bind(this)
+//       .then(function(hash) {
+//         this.set('password', hash);
+//       });
+//   }
+// });
+
+module.exports = userSchema;
