@@ -10,6 +10,10 @@ module.exports = function(grunt) {
       }
     },
     concat: {
+      basic: {
+        src: ['public/client/app.js', 'public/client/createLinkView.js', 'public/client/link.js', 'public/client/links.js', 'public/client/linksView.js', 'public/client/linkView.js', 'public/client/router.js'],
+        dest: 'public/dist/files.js'
+      }
     },
 
     mochaTest: {
@@ -28,6 +32,11 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      my_target: {
+        files: {
+          'public/dist/files.js': ['public/dist/files.js']
+        }
+      }
     },
 
     eslint: {
@@ -98,6 +107,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    grunt.task.run([ 'concat' ])
   ]);
 
 
