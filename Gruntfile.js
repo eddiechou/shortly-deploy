@@ -2,6 +2,13 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    gitpush: {
+      your_target: {
+        options: {
+          remote: 'live'
+        }
+      }
+    },
     concat: {
     },
 
@@ -63,6 +70,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
+  grunt.loadNpmTasks('grunt-git');
 
   grunt.registerTask('server-dev', function (target) {
     grunt.task.run([ 'nodemon', 'watch' ]);
@@ -82,6 +90,7 @@ module.exports = function(grunt) {
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run([ 'gitpush' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
