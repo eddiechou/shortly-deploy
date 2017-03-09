@@ -101,10 +101,11 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'eslint',
-    'test',
-    'deploy'
+    'concat',
+    'uglify',
+    'cssmin'
   ]);
+
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
@@ -115,12 +116,15 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('deploy', [
+  grunt.registerTask('deploy', function(n) {
+    // deploy to production environment
+    if (grunt.option('prod')) {
+      grunt.task.run([ 'eslint', 'test', 'gitpush' ]);
+    } else {  // deploy to local
+      grunt.task.run([ 'concat', 'uglify', 'cssmin', 'server-dev' ]);
+    }
     // add your deploy tasks here
-    'concat', 
-    'uglify',
-    'cssmin'
-  ]); 
+  }); 
 
 
 };
