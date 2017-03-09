@@ -12,7 +12,7 @@ module.exports = function(grunt) {
     concat: {
       basic: {
         src: ['public/client/app.js', 'public/client/createLinkView.js', 'public/client/link.js', 'public/client/links.js', 'public/client/linksView.js', 'public/client/linkView.js', 'public/client/router.js'],
-        dest: 'public/dist/files.js'
+        dest: 'public/dist/clientfiles.js'
       }
     },
 
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     uglify: {
       my_target: {
         files: {
-          'public/dist/files.js': ['public/dist/files.js']
+          'public/dist/clientfiles.min.js': ['public/dist/clientfiles.js']
         }
       }
     },
@@ -42,10 +42,17 @@ module.exports = function(grunt) {
     eslint: {
       target: [
         // Add list of files to lint here
+        // All client files, all files in app
+        'public/client/*.js', 'app/**/*.js'
       ]
     },
 
     cssmin: {
+      target: {
+        files: {
+          'public/dist/styles.min.css': ['public/style.css']
+        }
+      }
     },
 
     watch: {
@@ -94,6 +101,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'eslint',
+    'test',
+    'deploy'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -107,8 +117,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
-    grunt.task.run([ 'concat' ])
-  ]);
+    'concat', 
+    'uglify',
+    'cssmin'
+  ]); 
 
 
 };
